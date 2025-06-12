@@ -1,0 +1,84 @@
+{
+  "expense": [
+    {
+      "id": 1,
+      "title": "Gaji",
+      "type": "income",
+      "category": "Kerja",
+      "nominal": 3000000,
+      "date": "2025-06-01"
+    },
+    {
+      "id": 2,
+      "title": "Makan",
+      "type": "expense",
+      "category": "Makan dan Minum",
+      "nominal": 125000,
+      "date": "2025-06-02"
+    },
+    {
+      "id": 3,
+      "title": "Transportasi",
+      "type": "expense",
+      "category": "Transportasi",
+      "nominal": 50000,
+      "date": "2025-06-03"
+    },
+    {
+      "id": 4,
+      "title": "Freelance Project",
+      "type": "income",
+      "category": "Proyek Sampingan",
+      "nominal": 1500000,
+      "date": "2025-06-04"
+    },
+    {
+      "id": 5,
+      "title": "Ngopi",
+      "type": "expense",
+      "category": "Hiburan",
+      "nominal": 40000,
+      "date": "2025-06-04"
+    },
+    {
+      "id": 6,
+      "title": "Bayar Listrik",
+      "type": "expense",
+      "category": "Tagihan",
+      "nominal": 200000,
+      "date": "2025-06-05"
+    },
+    {
+      "id": 7,
+      "title": "Beli Buku",
+      "type": "expense",
+      "category": "Pendidikan",
+      "nominal": 75000,
+      "date": "2025-06-06"
+    },
+    {
+      "id": 8,
+      "title": "Dividen Saham",
+      "type": "income",
+      "category": "Investasi",
+      "nominal": 250000,
+      "date": "2025-06-07"
+    },
+    {
+      "id": 9,
+      "title": "Langganan Netflix",
+      "type": "expense",
+      "category": "Langganan",
+      "nominal": 65000,
+      "date": "2025-06-07"
+    },
+    {
+      "id": 10,
+      "title": "Beli Buah",
+      "type": "expense",
+      "category": "Makan dan Minum",
+      "nominal": 30000,
+      "date": "2025-06-08"
+    }
+  ]
+}
