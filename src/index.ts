@@ -3,6 +3,7 @@ dotenv.config();
 import express, { Application, Request, Response } from "express";
 // import router
 import expenseRouter from "./routers/expense.router";
+import poolDB from "./config/db";
 
 const PORT: string | number = process.env.PORT || 2500;
 
@@ -17,6 +18,15 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 app.use("/expense", expenseRouter);
+
+// check DB connection
+poolDB.connect((err, client, release) => {
+    if (err) {
+        return console.log("Error connection", err.message);
+    }
+    console.log("Success Connection ✅");
+    release();
+})
 
 app.listen(PORT, () => {
     console.log("EXPENSE API is RUNNING", PORT);
