@@ -1,15 +1,28 @@
 import { Request, Response } from "express";
-import { IExpense } from "../types/expense.type";
-import poolDB from "../config/db";
+import { prisma } from "../config/prisma";
 
 export const getData = async (req: Request, res: Response) => {
   try {
-    const sqlScript: string =
-      "select e.*, c.category_name, c.type from expense e join categories c on e.categoryid = c.id;";
-    const data = await poolDB.query(sqlScript);
-    console.log(data);
+    const filterData: any = {};
+    if (req.query.categoryId) {
+      filterData.categoryId = parseInt(req.query.categoryId as string);
+    }
+    if (req.query.title) {
+      filterData.title = req.query.title;
+    }
+    const expense = await prisma.expense.findMany({
+      where: filterData,
+      include: {
+        Categories: {
+          select: {
+            category_name: true,
+            type: true,
+          },
+        },
+      },
+    });
 
-    res.status(200).send(data.rows);
+    res.status(200).send(expense);
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
@@ -18,15 +31,6 @@ export const getData = async (req: Request, res: Response) => {
 
 export const getById = async (req: Request, res: Response) => {
   try {
-    const sqlScript: string = `select e.*, c.category_name, c.type from expense e join categories c on e.categoryid = c.id where e.id=$1 ;`;
-    console.log(sqlScript);
-    const data = await poolDB.query(sqlScript, [req.params.id]);
-    console.log(data.rowCount);
-
-    if (!data.rowCount) {
-      throw { rc: 404, message: "Data is not exist" };
-    }
-    res.status(200).send(data.rows[0]);
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
@@ -35,17 +39,21 @@ export const getById = async (req: Request, res: Response) => {
 
 export const addData = async (req: Request, res: Response) => {
   try {
-    // const sqlScript: string = "insert into expense (title, nominal, date, categoryid) values ($1, $2, $3, $4);";
-    const sqlScript: string = `insert into expense (${Object.keys(
-      req.body
-    ).join()}) values ($1, $2, $3, $4) RETURNING *;`;
-    console.log(sqlScript);
-    const data = await poolDB.query(sqlScript, Object.values(req.body));
+    const { title, nominal, date, categoryId } = req.body;
+
+    const expense = await prisma.expense.create({
+      data: {
+        title,
+        nominal,
+        date: new Date(date),
+        categoryId,
+      },
+    });
+    console.log(expense);
 
     res.status(201).send({
       success: true,
-      message: "Tambah data berhasil",
-      result: data.rows[0],
+      message: "Add data success",
     });
   } catch (error: any) {
     console.log(error);
@@ -55,17 +63,6 @@ export const addData = async (req: Request, res: Response) => {
 
 export const updateData = async (req: Request, res: Response) => {
   try {
-    const sqlScript: string = `update expense set title=$1, nominal=$2, date=$3, categoryid=$4 where id=$5 RETURNING *;`;
-    const data = await poolDB.query(sqlScript, [
-      ...Object.values(req.body),
-      req.params.id,
-    ]);
-
-    res.status(200).send({
-      success: true,
-      message: "Pembaruan data berhasil",
-      result: data.rows[0],
-    });
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
@@ -74,13 +71,6 @@ export const updateData = async (req: Request, res: Response) => {
 
 export const deleteData = async (req: Request, res: Response) => {
   try {
-    const sqlScript: string = `delete from expense where id=$1;`;
-    await poolDB.query(sqlScript, [req.params.id]);
-
-    res.status(200).send({
-      success: true,
-      message: "Hapus data berhasil",
-    });
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
