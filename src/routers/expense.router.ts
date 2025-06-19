@@ -2,10 +2,10 @@ import { Router } from "express";
 import {
   addData,
   deleteData,
-  getByCategory,
   getByDate,
   getById,
   getData,
+  getTotalByCategory,
   updateData,
 } from "../controllers/expense.controller";
 
@@ -16,7 +16,7 @@ router.get("/:id", getById);
 router.patch("/:id", updateData);
 router.delete("/:id", deleteData);
 router.post("/", addData);
-router.get("/byCategory/:category", getByCategory);
+router.get("/byCategory/:categoryId", getTotalByCategory);
 router.get("/byDate/:startDate/:endDate", getByDate);
 
 export default router;

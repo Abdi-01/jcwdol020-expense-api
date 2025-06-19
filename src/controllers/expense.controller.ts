@@ -103,12 +103,39 @@ export const updateData = async (req: Request, res: Response) => {
 
 export const deleteData = async (req: Request, res: Response) => {
   try {
+    await prisma.expense.delete({
+      where: { id: parseInt(req.params.id) },
+    });
+
+    res.status(200).send({
+      success: true,
+      message: "Delete success",
+    });
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
   }
 };
 
-export const getByCategory = (req: Request, res: Response) => {};
+export const getTotalByCategory = async (req: Request, res: Response) => {
+  try {
+    const result = await prisma.expense.aggregate({
+      _sum: {
+        nominal: true,
+      },
+      where: {
+        categoryId: parseInt(req.params.categoryId),
+      },
+    });
+
+    res.status(200).send({
+      categoryId: req.params.categoryId,
+      total: result._sum.nominal,
+    });
+  } catch (error: any) {
+    console.log(error);
+    res.status(error.rc || 500).send(error);
+  }
+};
 
 export const getByDate = (req: Request, res: Response) => {};
