@@ -14,9 +14,8 @@ export const getData = async (req: Request, res: Response) => {
       where: filterData,
       include: {
         Categories: {
-          select: {
-            category_name: true,
-            type: true,
+          omit: {
+            id: true,
           },
         },
       },
@@ -31,6 +30,19 @@ export const getData = async (req: Request, res: Response) => {
 
 export const getById = async (req: Request, res: Response) => {
   try {
+    const expense = await prisma.expense.findUnique({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      include: {
+        Categories: { omit: { id: true } },
+      },
+    });
+
+    if (!expense) {
+      throw { rc: 404, message: "Data not found" };
+    }
+    res.status(200).send(expense);
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
@@ -63,6 +75,26 @@ export const addData = async (req: Request, res: Response) => {
 
 export const updateData = async (req: Request, res: Response) => {
   try {
+    const { title, nominal, date, categoryId } = req.body;
+
+    const expense = await prisma.expense.update({
+      where: {
+        id: parseInt(req.params.id),
+      },
+      data: {
+        title,
+        nominal,
+        date: new Date(date),
+        categoryId,
+      },
+    });
+    console.log(expense);
+
+    res.status(201).send({
+      success: true,
+      message: "Update data success",
+      result: expense,
+    });
   } catch (error: any) {
     console.log(error);
     res.status(error.rc || 500).send(error);
